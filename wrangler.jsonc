@@ -1,5 +1,5 @@
 {
-  "name": "court-booking-app",
+  "name": "court-booking",
   "compatibility_date": "2026-04-22",
   "assets": {
     "directory": "./build"
