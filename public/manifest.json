@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "CourtBooker",
+  "name": "Agenda tu cancha - Municipalidad de San Pedro",
+    "description": "A modern, responsive web app for booking tennis and padel courts at your club.",
   "icons": [
     {
       "src": "favicon.ico",
