@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../hooks/userContext";
 import { usersAll } from "../../mocks/users";
 import {
@@ -27,7 +26,7 @@ function TabPanel({ children, value, index }) {
 }
 export default function AccessModal({ open, onClose }) {
   const { setUser } = useContext(UserContext);
-  const navigate = useNavigate();
+  
     // Login state
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
