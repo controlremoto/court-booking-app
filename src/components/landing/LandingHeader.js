@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import KeySvg from "../auth/KeySvg";
+import UserIcon from '@mui/icons-material/Person';
 import AccessModal from "../auth/AccessModal";
 
 export default function LandingHeader() {
@@ -16,7 +16,9 @@ export default function LandingHeader() {
             <Button
               color="primary"
               variant="outlined"
-              startIcon={<KeySvg style={{ marginRight: 4 }} />}
+              // use <KeyIcon color="primary" /> instead of startIcon
+              startIcon={<UserIcon color="primary" />}
+
               onClick={() => setAccessOpen(true)}
             >
               Access

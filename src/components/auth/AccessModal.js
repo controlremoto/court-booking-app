@@ -9,8 +9,11 @@ import {
   Tab,
   Button,
   TextField,
-  Divider
+  Divider,
+  InputAdornment
 } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from "@mui/icons-material/Close";
 import KeyIcon from "@mui/icons-material/VpnKey";
 import GoogleIcon from '@mui/icons-material/Google';
@@ -30,6 +33,9 @@ export default function AccessModal({ open, onClose }) {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupRetype, setSignupRetype] = useState("");
   const [showRules, setShowRules] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showSignupRetype, setShowSignupRetype] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Password rules
   const rules = [
@@ -95,7 +101,7 @@ export default function AccessModal({ open, onClose }) {
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <KeyIcon color="primary" />
-          <Typography variant="h6" fontWeight={700}>
+          <Typography variant="h6" fontWeight={700} color="primary">
             Access
           </Typography>
         </Box>
@@ -116,7 +122,27 @@ export default function AccessModal({ open, onClose }) {
         <TabPanel value={tab} index={0}>
           <form>
             <TextField label="Email" type="email" fullWidth margin="normal" required />
-            <TextField label="Password" type="password" fullWidth margin="normal" required />
+            <TextField
+              label="Password"
+              type={showLoginPassword ? "text" : "password"}
+              fullWidth
+              margin="normal"
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowLoginPassword((show) => !show)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showLoginPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
               Log In
             </Button>
@@ -134,7 +160,7 @@ export default function AccessModal({ open, onClose }) {
             <TextField label="Email" type="email" fullWidth margin="normal" required />
             <TextField
               label="Password"
-              type="password"
+              type={showSignupPassword ? "text" : "password"}
               fullWidth
               margin="normal"
               required
@@ -144,21 +170,43 @@ export default function AccessModal({ open, onClose }) {
               autoComplete="new-password"
               InputProps={{
                 endAdornment: (
-                  <Button size="small" onClick={generatePassword} sx={{ ml: 1 }}>
-                    Auto-generate
-                  </Button>
+                  <>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowSignupPassword((show) => !show)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showSignupPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                    <Button size="small" onClick={generatePassword} sx={{ ml: 1 }}>
+                      Auto-generate
+                    </Button>
+                  </>
                 )
               }}
             />
             <TextField
               label="Retype Password"
-              type="password"
+              type={showSignupRetype ? "text" : "password"}
               fullWidth
               margin="normal"
               required
               value={signupRetype}
               onChange={e => setSignupRetype(e.target.value)}
               autoComplete="new-password"
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowSignupRetype((show) => !show)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showSignupRetype ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                )
+              }}
             />
             {showRules && (
               <Box sx={{ mt: 1, mb: 1 }}>
