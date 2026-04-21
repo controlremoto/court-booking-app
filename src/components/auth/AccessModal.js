@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../hooks/userContext";
+import { usersAll } from "../../mocks/users";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +12,11 @@ import {
   Tab,
   Button,
   TextField,
-  Divider
+  Divider,
+  InputAdornment
 } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from "@mui/icons-material/Close";
 import KeyIcon from "@mui/icons-material/VpnKey";
 import GoogleIcon from '@mui/icons-material/Google';
@@ -20,6 +26,12 @@ function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ pt: 2 }}>{children}</Box>;
 }
 export default function AccessModal({ open, onClose }) {
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+    // Login state
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
+    const [loginError, setLoginError] = useState("");
   const [tab, setTab] = useState(0);
   // Always reset to login when modal opens
   useEffect(() => {
@@ -30,6 +42,9 @@ export default function AccessModal({ open, onClose }) {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupRetype, setSignupRetype] = useState("");
   const [showRules, setShowRules] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showSignupRetype, setShowSignupRetype] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Password rules
   const rules = [
@@ -95,7 +110,7 @@ export default function AccessModal({ open, onClose }) {
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <KeyIcon color="primary" />
-          <Typography variant="h6" fontWeight={700}>
+          <Typography variant="h6" fontWeight={700} color="primary">
             Access
           </Typography>
         </Box>
@@ -114,9 +129,59 @@ export default function AccessModal({ open, onClose }) {
       </Tabs>
       <DialogContent sx={{ pt: 0 }}>
         <TabPanel value={tab} index={0}>
-          <form>
-            <TextField label="Email" type="email" fullWidth margin="normal" required />
-            <TextField label="Password" type="password" fullWidth margin="normal" required />
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              setLoginError("");
+              const user = usersAll.find(
+                u => u.username === loginEmail && u.password === loginPassword
+              );
+              if (user) {
+                setUser(user);
+                onClose && onClose();
+                // Stay on current page after login
+              } else {
+                setLoginError("Incorrect email or password.");
+              }
+            }}
+          >
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              required
+              value={loginEmail}
+              onChange={e => setLoginEmail(e.target.value)}
+            />
+            <TextField
+              label="Password"
+              type={showLoginPassword ? "text" : "password"}
+              fullWidth
+              margin="normal"
+              required
+              value={loginPassword}
+              onChange={e => setLoginPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowLoginPassword((show) => !show)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showLoginPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            {loginError && (
+              <Typography color="error" variant="caption" display="block" sx={{ mt: 1 }}>
+                {loginError}
+              </Typography>
+            )}
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
               Log In
             </Button>
@@ -134,7 +199,7 @@ export default function AccessModal({ open, onClose }) {
             <TextField label="Email" type="email" fullWidth margin="normal" required />
             <TextField
               label="Password"
-              type="password"
+              type={showSignupPassword ? "text" : "password"}
               fullWidth
               margin="normal"
               required
@@ -144,21 +209,43 @@ export default function AccessModal({ open, onClose }) {
               autoComplete="new-password"
               InputProps={{
                 endAdornment: (
-                  <Button size="small" onClick={generatePassword} sx={{ ml: 1 }}>
-                    Auto-generate
-                  </Button>
+                  <>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowSignupPassword((show) => !show)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showSignupPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                    <Button size="small" onClick={generatePassword} sx={{ ml: 1 }}>
+                      Auto-generate
+                    </Button>
+                  </>
                 )
               }}
             />
             <TextField
               label="Retype Password"
-              type="password"
+              type={showSignupRetype ? "text" : "password"}
               fullWidth
               margin="normal"
               required
               value={signupRetype}
               onChange={e => setSignupRetype(e.target.value)}
               autoComplete="new-password"
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowSignupRetype((show) => !show)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showSignupRetype ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                )
+              }}
             />
             {showRules && (
               <Box sx={{ mt: 1, mb: 1 }}>
