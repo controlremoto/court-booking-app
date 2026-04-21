@@ -1,6 +1,5 @@
 import React from "react";
 import HeroBanner from "../components/landing/HeroBanner";
-import LandingHeader from "../components/landing/LandingHeader";
 import FullWidthBanner from "../components/landing/FullWidthBanner";
 import Footer from "../components/common/Footer";
 
@@ -13,7 +12,6 @@ export default function LandingPage() {
 
   return (
     <>
-      <LandingHeader />
       <FullWidthBanner image="/images/hero/homepage_cover.jpg" alt="Mixed Team Players" />
       <HeroBanner onBook={handleBook} />
       {/* Add more landing content here (announcements, features, etc.) */}

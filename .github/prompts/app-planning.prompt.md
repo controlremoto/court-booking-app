@@ -30,7 +30,9 @@ Here’s a consolidated, high-level plan for your scalable, secure, and modern c
   - Select court type → calendar → book → confirmation (with email)
   - Only logged-in users can book
 - **Profile:**  
-  - Booking history, results, opponent/team info (auto-generated if not entered)
+  - Booking history, results, opponent/team info (auto-generated if not entered), Name, email, phone, country, region, communa, Address and profile picture (optional)
+- **Admin Dashboard:**
+- Manage courts, users, hero images, announcements
 - **Announcements:**  
   - Displayed on landing page, managed by admin
 

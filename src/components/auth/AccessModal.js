@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../hooks/userContext";
+import { usersAll } from "../../mocks/users";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +26,12 @@ function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ pt: 2 }}>{children}</Box>;
 }
 export default function AccessModal({ open, onClose }) {
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+    // Login state
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
+    const [loginError, setLoginError] = useState("");
   const [tab, setTab] = useState(0);
   // Always reset to login when modal opens
   useEffect(() => {
@@ -120,14 +129,39 @@ export default function AccessModal({ open, onClose }) {
       </Tabs>
       <DialogContent sx={{ pt: 0 }}>
         <TabPanel value={tab} index={0}>
-          <form>
-            <TextField label="Email" type="email" fullWidth margin="normal" required />
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              setLoginError("");
+              const user = usersAll.find(
+                u => u.username === loginEmail && u.password === loginPassword
+              );
+              if (user) {
+                setUser(user);
+                onClose && onClose();
+                // Stay on current page after login
+              } else {
+                setLoginError("Incorrect email or password.");
+              }
+            }}
+          >
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              required
+              value={loginEmail}
+              onChange={e => setLoginEmail(e.target.value)}
+            />
             <TextField
               label="Password"
               type={showLoginPassword ? "text" : "password"}
               fullWidth
               margin="normal"
               required
+              value={loginPassword}
+              onChange={e => setLoginPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -143,6 +177,11 @@ export default function AccessModal({ open, onClose }) {
                 )
               }}
             />
+            {loginError && (
+              <Typography color="error" variant="caption" display="block" sx={{ mt: 1 }}>
+                {loginError}
+              </Typography>
+            )}
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
               Log In
             </Button>

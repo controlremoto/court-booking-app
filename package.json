@@ -17,13 +17,13 @@
     "@testing-library/user-event": "^13.5.0",
     "devextreme": "23.2.4",
     "devextreme-react": "23.2.4",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^8.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-fast-marquee": "^1.6.4",
     "react-icons": "^5.6.0",
     "react-router-dom": "^6.22.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-toastify": "^10.0.5",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4"
@@ -56,7 +56,16 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "devextreme-themebuilder": "23.2.4",
     "serve": "^14.2.6"
+  }
+  ,
+  "overrides": {
+    "nth-check": "2.0.1",
+    "postcss": "8.4.31",
+    "serialize-javascript": "7.0.5",
+    "css-select": "3.1.2",
+    "svgo": "2.8.0"
   }
 }

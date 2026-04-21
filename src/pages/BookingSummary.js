@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Paper, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from "../components/common/Footer";
 
 export default function BookingSummary() {
   const location = useLocation();
@@ -11,7 +12,8 @@ export default function BookingSummary() {
   }
   const { courtType, date, slot, username } = state;
   return (
-    <Box sx={{ maxWidth: 500, mx: "auto", mt: 8 }}>
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ maxWidth: 500, mx: "auto", mt: 8 ,  flex:1, alignItems: "center", justifyContent: "center", display: "flex" }}>
       <Paper sx={{ p: 4, textAlign: "center" }}>
         <Typography variant="h4" fontWeight={700} color="success.main" gutterBottom>
           🎾 Booking Confirmed!
@@ -33,6 +35,8 @@ export default function BookingSummary() {
         </Typography>
         <Button variant="contained" color="primary" onClick={() => navigate("/")}>Back to Home</Button>
       </Paper>
+      </Box>
+      <Footer />
     </Box>
   );
 }

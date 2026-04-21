@@ -1,7 +1,7 @@
 // Mock data for users endpoints
 export const usersAll = [
-  { id: "1", name: "Alice", username: "alice@email.com", role: "user", delete: false },
-  { id: "2", name: "Bob", username: "bob@email.com", role: "admin", delete: false }
+  { id: "1", name: "Alice", username: "user@email.com", password: "alicepass", role: "user", delete: false },
+  { id: "2", name: "Bob", username: "bob@email.com", password: "bobpass", role: "admin", delete: false }
 ];
 
 export const usersBooked = [
