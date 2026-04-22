@@ -14,7 +14,6 @@ export default function LandingPage() {
     <>
       <FullWidthBanner image="/images/hero/homepage_cover.jpg" alt="Mixed Team Players" />
       <HeroBanner onBook={handleBook} />
-      {/* Add more landing content here (announcements, features, etc.) */}
       <Footer />
     </>
   );
