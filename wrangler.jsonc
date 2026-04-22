@@ -2,7 +2,9 @@
   "name": "court-booking",
   "compatibility_date": "2026-04-22",
   "assets": {
-    "directory": "./build"
+    "directory": "./build",
+    "not_found_handling": "single-page-application",
+    "html_handling": "auto-trailing-slash"
   },
   "observability": {
     "enabled": false,
