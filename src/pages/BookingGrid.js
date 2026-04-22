@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
+import AccessModal from "../components/auth/AccessModal";
+import { UserContext } from "../hooks/userContext";
 import { Box, Typography, Button, Paper, Grid } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import availabilityData from "../data/availability.json";
-import users from "../data/users.json";
 import Footer from "../components/common/Footer";
 
 const availableSlots = [
@@ -31,121 +32,137 @@ export default function BookingGrid() {
     const courtType = params.get("courtType") || "tennis";
     const [selectedDay, setSelectedDay] = useState(0);
     const [selectedSlot, setSelectedSlot] = useState("");
-    //const [booking, setBooking] = useState(null);
+    const { user } = useContext(UserContext);
+    const [accessOpen, setAccessOpen] = useState(false);
+    // Store booking intent to auto-continue after login
+    const bookingIntent = useRef(false);
     const days = getNext7Days();
-    const username = users[0].username; // Mock: always Alice
 
     useEffect(() => {
         setSelectedSlot("");
     }, [selectedDay, courtType]);
 
     const handleBook = () => {
-        // setBooking({
-        //     courtType,
-        //     date: days[selectedDay].date,
-        //     slot: selectedSlot,
-        //     username,
-        // });
+        if (!user || !user.username) {
+            // Not logged in, show modal and set intent
+            bookingIntent.current = true;
+            setAccessOpen(true);
+            return;
+        }
+        // Proceed with booking
         setTimeout(() => {
             navigate("/booking/summary", {
                 state: {
                     courtType,
                     date: days[selectedDay].date,
                     slot: selectedSlot,
-                    username,
+                    username: user.username,
+                    name: user.name,
                 },
             });
         }, 800);
     };
 
+    // Effect: If modal closes and user is now logged in, auto-continue booking if intent was set
+    useEffect(() => {
+        if (accessOpen === false && bookingIntent.current && user && user.username) {
+            bookingIntent.current = false;
+            handleBook();
+        }
+        // eslint-disable-next-line
+    }, [accessOpen, user]);
+
     const bookedSlots = availabilityData[courtType]?.[days[selectedDay].date] || [];
 
     return (
-        <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            <Box sx={{ maxWidth: 700, mx: "auto", mt: 6, p: 3, flex:1, alignItems: "center", justifyContent: "center", display: "flex" }}>
-                <Paper sx={{ p: 3, mb: 3 }} elevation={3}>
-                    <Typography variant="h5" fontWeight={700} mb={2}>
-                        Book a {courtType} court
-                    </Typography>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            mb: 2,
-                            justifyContent: { xs: "flex-start", sm: "center" },
-                            maxWidth: "100%",
-                        }}
-                    >
-                        {days.map((day, idx) => (
-                            <Button
-                                key={day.date}
-                                variant={selectedDay === idx ? "contained" : "outlined"}
-                                onClick={() => setSelectedDay(idx)}
-                                sx={{
-                                    minWidth: 60,
-                                    px: 1,
-                                    py: 1,
-                                    fontSize: { xs: "0.85rem", sm: "1rem" },
-                                    mb: { xs: 1, sm: 0 },
-                                }}
-                            >
-                                <div>
-                                    <div>{day.dayName}</div>
-                                    <div>{day.dayOfMonth}</div>
-                                </div>
-                            </Button>
-                        ))}
-                    </Box>
-                    <Typography variant="subtitle1" mb={1}>
-                        Select a time slot:
-                    </Typography>
-                    <Grid container spacing={1}>
-                        {availableSlots.map((slot) => {
-                            const isBooked = bookedSlots.includes(slot);
-                            const isSelected = selectedSlot === slot;
-                            return (
-                                <Grid item xs={6} sm={4} md={2} key={slot}>
-                                    <Button
-                                        variant={isSelected ? "contained" : "outlined"}
-                                        color={isBooked ? "inherit" : "primary"}
-                                        disabled={isBooked}
-                                        fullWidth
-                                        sx={{
-                                            bgcolor: isBooked ? "grey.300" : isSelected ? "primary.main" : undefined,
-                                            color: isBooked ? "grey.600" : undefined,
-                                            minWidth: 0,
-                                            minHeight: 48,
-                                            fontSize: { xs: "0.9rem", sm: "1rem" },
-                                            p: { xs: 0.5, sm: 1 },
-                                        }}
-                                        onClick={() => {
-                                            if (isSelected) {
-                                                setSelectedSlot("");
-                                            } else {
-                                                setSelectedSlot(slot);
-                                            }
-                                        }}
-                                    >
-                                        {slot}
-                                    </Button>
-                                </Grid>
-                            );
-                        })}
-                    </Grid>
-                    <Button
-                        variant="contained"
-                        color="success"
-                        fullWidth
-                        sx={{ mt: 3 }}
-                        disabled={!selectedSlot}
-                        onClick={handleBook}
-                    >
-                        Confirm Booking
-                    </Button>
-                </Paper>
+        <>
+            <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+                <Box sx={{ maxWidth: 700, mx: "auto", mt: 6, p: 3, flex:1, alignItems: "center", justifyContent: "center", display: "flex" }}>
+                    <Paper sx={{ p: 3, mb: 3 }} elevation={3}>
+                        <Typography variant="h5" fontWeight={700} mb={2}>
+                            Book a {courtType} court
+                        </Typography>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 1,
+                                mb: 2,
+                                justifyContent: { xs: "flex-start", sm: "center" },
+                                maxWidth: "100%",
+                            }}
+                        >
+                            {days.map((day, idx) => (
+                                <Button
+                                    key={day.date}
+                                    variant={selectedDay === idx ? "contained" : "outlined"}
+                                    onClick={() => setSelectedDay(idx)}
+                                    sx={{
+                                        minWidth: 60,
+                                        px: 1,
+                                        py: 1,
+                                        fontSize: { xs: "0.85rem", sm: "1rem" },
+                                        mb: { xs: 1, sm: 0 },
+                                    }}
+                                >
+                                    <div>
+                                        <div>{day.dayName}</div>
+                                        <div>{day.dayOfMonth}</div>
+                                    </div>
+                                </Button>
+                            ))}
+                        </Box>
+                        <Typography variant="subtitle1" mb={1}>
+                            Select a time slot:
+                        </Typography>
+                        <Grid container spacing={1}>
+                            {availableSlots.map((slot) => {
+                                const isBooked = bookedSlots.includes(slot);
+                                const isSelected = selectedSlot === slot;
+                                return (
+                                    <Grid item xs={6} sm={4} md={2} key={slot}>
+                                        <Button
+                                            variant={isSelected ? "contained" : "outlined"}
+                                            color={isBooked ? "inherit" : "primary"}
+                                            disabled={isBooked}
+                                            fullWidth
+                                            sx={{
+                                                bgcolor: isBooked ? "grey.300" : isSelected ? "primary.main" : undefined,
+                                                color: isBooked ? "grey.600" : undefined,
+                                                minWidth: 0,
+                                                minHeight: 48,
+                                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                                                p: { xs: 0.5, sm: 1 },
+                                            }}
+                                            onClick={() => {
+                                                if (isSelected) {
+                                                    setSelectedSlot("");
+                                                } else {
+                                                    setSelectedSlot(slot);
+                                                }
+                                            }}
+                                        >
+                                            {slot}
+                                        </Button>
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
+                        <Button
+                            variant="contained"
+                            color="success"
+                            fullWidth
+                            sx={{ mt: 3 }}
+                            disabled={!selectedSlot}
+                            onClick={handleBook}
+                        >
+                            Confirm Booking
+                        </Button>
+                    </Paper>
+                </Box>
+                <Footer />
             </Box>
-            <Footer />
-        </Box>
+            <AccessModal open={accessOpen} onClose={() => setAccessOpen(false)} />
+        </>
     );
 }
