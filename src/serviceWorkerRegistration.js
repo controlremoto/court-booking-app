@@ -50,6 +50,16 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
+      // When the new SW activates and calls clients.claim(), reload the page
+      // so the latest HTML and fingerprinted assets are used immediately.
+      // The `refreshing` guard prevents infinite reload loops and avoids
+      // reloading on the very first install (no previous controller).
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
