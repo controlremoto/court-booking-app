@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-import AccessModal from "../components/auth/AccessModal";
-import { UserContext } from "../hooks/userContext";
-import { Box, Typography, Button, Paper, Grid } from "@mui/material";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import availabilityData from "../data/availability.json";
+import { Box, Typography, Button, Paper, Grid, useTheme } from "@mui/material";
+import { UserContext } from "../hooks/userContext";
 import Footer from "../components/common/Footer";
-
+import AccessModal from "../components/auth/AccessModal";
+import availabilityData from "../data/availability.json";
 const availableSlots = [
     "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
 ];
@@ -50,6 +49,7 @@ export default function BookingGrid() {
     // Store booking intent to auto-continue after login
     const bookingIntent = useRef(false);
     const days = getNext7Days();
+    const theme = useTheme();
 
     useEffect(() => {
         setSelectedSlot("");
@@ -84,7 +84,6 @@ export default function BookingGrid() {
         }
         // eslint-disable-next-line
     }, [accessOpen, user]);
-
 
     const bookedSlots = availabilityData[courtType]?.[days[selectedDay].date] || [];
 
@@ -150,6 +149,25 @@ export default function BookingGrid() {
                                 const isBooked = bookedSlots.includes(slot);
                                 const isBlocked = isToday && blockedSlots.includes(slot);
                                 const isSelected = selectedSlot === slot;
+                                // Theme-aware colors for blocked/booked slots
+                                let slotBg, slotColor, slotBorder;
+                                if (isBooked || isBlocked) {
+                                    slotBg = theme.palette.mode === "dark"
+                                        ? theme.palette.grey[800]
+                                        : theme.palette.grey[300];
+                                    slotColor = theme.palette.mode === "dark"
+                                        ? theme.palette.grey[400]
+                                        : theme.palette.grey[600];
+                                    slotBorder = `1px solid ${theme.palette.mode === "dark" ? theme.palette.grey[700] : theme.palette.grey[400]}`;
+                                } else if (isSelected) {
+                                    slotBg = theme.palette.primary.main;
+                                    slotColor = theme.palette.primary.contrastText;
+                                    slotBorder = `1.5px solid ${theme.palette.primary.main}`;
+                                } else {
+                                    slotBg = undefined;
+                                    slotColor = undefined;
+                                    slotBorder = undefined;
+                                }
                                 return (
                                     <Grid item xs={6} sm={4} md={2} key={slot}>
                                         <Button
@@ -158,12 +176,14 @@ export default function BookingGrid() {
                                             disabled={isBooked || isBlocked}
                                             fullWidth
                                             sx={{
-                                                bgcolor: (isBooked || isBlocked) ? "grey.300" : isSelected ? "primary.main" : undefined,
-                                                color: (isBooked || isBlocked) ? "grey.600" : undefined,
+                                                bgcolor: slotBg,
+                                                color: slotColor,
+                                                border: slotBorder,
                                                 minWidth: 0,
                                                 minHeight: 48,
                                                 fontSize: { xs: "0.9rem", sm: "1rem" },
                                                 p: { xs: 0.5, sm: 1 },
+                                                opacity: isBooked || isBlocked ? 0.7 : 1,
                                             }}
                                             onClick={() => {
                                                 if (isSelected) {
@@ -197,3 +217,5 @@ export default function BookingGrid() {
         </>
     );
 }
+
+

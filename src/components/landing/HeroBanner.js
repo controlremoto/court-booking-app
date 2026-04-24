@@ -49,7 +49,6 @@ export default function HeroBanner() {
         {courtTypes.map((court) => (
           <Grid item xs={12} sm={6} md={3} key={court.name}>
             <Box sx={{
-              boxShadow: 3,
               borderRadius: 3,
               overflow: "hidden",
               bgcolor: "background.paper",
@@ -58,6 +57,11 @@ export default function HeroBanner() {
               alignItems: "center",
               p: 2,
               height: "100%",
+              transition: 'box-shadow 0.3s',
+              boxShadow: theme =>
+                theme.palette.mode === 'dark'
+                  ? '0 4px 24px 0 rgba(255,255,255,0.08), 0 1.5px 6px 0 rgba(0,0,0,0.25)'
+                  : '0 4px 24px 0 rgba(0,0,0,0.08), 0 1.5px 6px 0 rgba(0,0,0,0.15)',
             }}>
               <img
                 src={court.image}
