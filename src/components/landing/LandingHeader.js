@@ -37,7 +37,7 @@ export default function LandingHeader() {
             variant="h6"
             fontWeight={700}
             color="primary"
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", whiteSpace: "nowrap", fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" } }}
             onClick={() => navigate("/")}
           >
             Sports Booking
