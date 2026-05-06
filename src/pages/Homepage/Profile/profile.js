@@ -33,7 +33,7 @@ export default function Profile() {
   const profile = { ...mockProfile, ...user };
 
   return (
-    <Box sx={{ bgcolor: "#f7f8fa", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ bgcolor: "#18191a", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Main content grows and centers vertically */}
       <Box sx={{ flex:1,  width: "100%", px: { xs: 2, sm: 3 }, py: 3, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Outer flex row on desktop, column on mobile — always centered */}
