@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../../hooks/userContext";
-import { Box, Typography, Avatar, Paper, Button, Divider, Chip } from "@mui/material";
+import { Box, Typography, Avatar, Paper, Button, Divider, Chip, useTheme } from "@mui/material";
 import Footer from "../../../components/common/Footer";
 
 // Mock booking history and profile details for demo
@@ -25,6 +25,7 @@ const mockProfile = {
 
 export default function Profile() {
   const { user } = useContext(UserContext);
+  const theme = useTheme();
   if (!user || !user.username) {
     return <Typography variant="h6">You must be logged in to view your profile.</Typography>;
   }
@@ -33,7 +34,7 @@ export default function Profile() {
   const profile = { ...mockProfile, ...user };
 
   return (
-    <Box sx={{ bgcolor: "#18191a", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ bgcolor: theme.palette.background.default, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Main content grows and centers vertically */}
       <Box sx={{ flex:1,  width: "100%", px: { xs: 2, sm: 3 }, py: 3, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Outer flex row on desktop, column on mobile — always centered */}
