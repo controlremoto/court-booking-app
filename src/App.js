@@ -6,6 +6,7 @@ import LandingHeader from "./components/landing/LandingHeader";
 import BookingGrid from "./pages/BookingGrid";
 import BookingSummary from "./pages/BookingSummary";
 import Profile from "./pages/Homepage/Profile/profile";
+import NotFound from "./pages/NotFound";
 import { UserContext } from "./hooks";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 
@@ -70,6 +71,7 @@ function App() {
           <Route path="/booking" element={<BookingGrid />} />
           <Route path="/booking/summary" element={<BookingSummary />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </UserContext.Provider>
     </ThemeProvider>
